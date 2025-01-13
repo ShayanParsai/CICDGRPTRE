@@ -26,9 +26,12 @@ namespace PersonnummerKontroll
                 Console.WriteLine($"Ogiltigt personnummer: {personnummer}");
             }
 
-            // Pausa programmet för att låta användaren se resultatet
-            Console.WriteLine("Tryck på valfri tangent för att avsluta...");
-            Console.ReadKey();
+            // Pausa programmet endast om det är en interaktiv terminal
+            if (Console.IsInputRedirected == false)
+            {
+                Console.WriteLine("Tryck på valfri tangent för att avsluta...");
+                Console.ReadKey();
+            }
         }
 
         static string TaEmotPersonnummer()
