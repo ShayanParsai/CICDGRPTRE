@@ -28,5 +28,8 @@ jobs:
       - name: Build Docker image
         run: docker build -t chalamdor/personnummer:latest -f ./personnummer/Dockerfile .
 
+      - name: Push Docker image
+        run: docker push chalamdor/personnummer:latest
+
       - name: Test Docker container
         run: docker run chalamdor/personnummer:latest
