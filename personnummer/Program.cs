@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 
 namespace PersonnummerKontroll
 {
@@ -7,16 +6,34 @@ namespace PersonnummerKontroll
     {
         static void Main(string[] args)
         {
-            // Ta emot och validera personnummer från användaren
-            string personnummer = TaEmotPersonnummer();
+            // Använd standardvärde om inget personnummer tillhandahålls
+            string personnummer = args.Length > 0 ? args[0] : "1234567890";
+
+            // Kontrollera om programmet körs i interaktivt läge (t.ex., i en terminal)
+            if (Console.IsInputRedirected == false) // Interaktivt läge
+            {
+                // Be användaren ange ett personnummer
+                personnummer = TaEmotPersonnummer();
+            }
 
             // Visa det validerade personnumret
-            Console.WriteLine($"Inmatat personnummer: {personnummer}");
+            if (ValideraPersonnummer(personnummer))
+            {
+                Console.WriteLine($"Inmatat personnummer är giltigt: {personnummer}");
+            }
+            else
+            {
+                Console.WriteLine($"Ogiltigt personnummer: {personnummer}");
+            }
+
+            // Pausa programmet för att låta användaren se resultatet
+            Console.WriteLine("Tryck på valfri tangent för att avsluta...");
+            Console.ReadKey();
         }
 
         static string TaEmotPersonnummer()
         {
-            string personnummer = ""; // Deklarera personnummer här
+            string personnummer = "";
             bool ärGiltigt = false;
 
             while (!ärGiltigt)
@@ -34,9 +51,8 @@ namespace PersonnummerKontroll
             }
 
             // Returnera det validerade personnumret utan bindestreck
-            return personnummer.Replace("-", ""); // Nu är personnummer tillgänglig här
+            return personnummer.Replace("-", "");
         }
-
 
         static bool ValideraPersonnummer(string personnummer)
         {
@@ -50,9 +66,12 @@ namespace PersonnummerKontroll
             }
 
             // Kontrollera att alla tecken är siffror
-            if (!Regex.IsMatch(personnummer, @"^\d+$"))
+            foreach (char c in personnummer)
             {
-                return false;
+                if (!char.IsDigit(c)) // Kontrollera om tecknet är en siffra
+                {
+                    return false;
+                }
             }
 
             return true;
