@@ -7,22 +7,22 @@ namespace PersonnummerKontroll
         static void Main(string[] args)
         {
             // Använd standardvärde om inget personnummer tillhandahålls
-            string personnummer = args.Length > 0 ? args[0] : "1234567850";
+            string personalNumber = args.Length > 0 ? args[0] : "1234567850";
 
             // Kontrollera om programmet körs i interaktivt läge (t.ex., i en terminal)
             if (!Console.IsInputRedirected) // Interaktivt läge
             {
-                personnummer = TaEmotPersonnummer();
+                personalNumber = GetPersonalNumber();
             }
 
             // Validera personnummer
-            if (IsValidPersonnummer(personnummer))
+            if (IsValidPersonalNumber(personalNumber))
             {
-                Console.WriteLine($"Inmatat personnummer är giltigt: {personnummer}");
+                Console.WriteLine($"Inmatat personnummer är giltigt: {personalNumber}");
             }
             else
             {
-                Console.WriteLine($"Ogiltigt personnummer: {personnummer}");
+                Console.WriteLine($"Ogiltigt personnummer: {personalNumber}");
             }
 
             // Pausa programmet endast om det är en interaktiv terminal
@@ -33,7 +33,7 @@ namespace PersonnummerKontroll
             }
         }
 
-        static string TaEmotPersonnummer()
+        static string GetPersonalNumber()
         {
             while (true)
             {
@@ -49,18 +49,18 @@ namespace PersonnummerKontroll
             }
         }
 
-        static bool IsValidFormat(string personnummer)
+        static bool IsValidFormat(string personalNumber)
         {
-            personnummer = personnummer.Replace("-", "");
+            personalNumber = personalNumber.Replace("-", "");
 
             // Kontrollera längd (10 siffror för personnummer)
-            if (personnummer.Length != 10)
+            if (personalNumber.Length != 10)
             {
                 return false;
             }
 
             // Kontrollera att alla tecken är siffror
-            foreach (char c in personnummer)
+            foreach (char c in personalNumber)
             {
                 if (!char.IsDigit(c))
                 {
@@ -71,17 +71,17 @@ namespace PersonnummerKontroll
             return true;
         }
 
-        static bool IsValidPersonnummer(string personnummer)
+        static bool IsValidPersonalNumber(string personalNumber)
         {
-            personnummer = personnummer.Replace("-", "");
+            personalNumber = personalNumber.Replace("-", "");
 
             // Luhn-algoritmen
             int sum = 0;
             bool isSecond = false;
 
-            for (int i = personnummer.Length - 1; i >= 0; i--)
+            for (int i = personalNumber.Length - 1; i >= 0; i--)
             {
-                int digit = personnummer[i] - '0';
+                int digit = personalNumber[i] - '0';
 
                 if (isSecond)
                 {
@@ -95,7 +95,6 @@ namespace PersonnummerKontroll
                 sum += digit;
                 isSecond = !isSecond;
             }
-
             return (sum % 10 == 0);
         }
     }
