@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace PersonnummerKontroll
 {
@@ -9,35 +9,24 @@ namespace PersonnummerKontroll
             // Använd standardvärde om inget personnummer tillhandahålls
             string personnummer = args.Length > 0 ? args[0] : "1234567850";
 
-            // Interaktiv sektion för validering av personnummer
-            while (true)
+            // Kontrollera om programmet körs i interaktivt läge (t.ex., i en terminal)
+            if (!Console.IsInputRedirected) // Interaktivt läge
             {
-                Console.Write("Ange ett svenskt personnummer (ÅÅMMDD-XXXX): ");
-                string input = Console.ReadLine();
+                personnummer = TaEmotPersonnummer();
+            }
 
-                // Validera format
-                if (!IsValidFormat(input))
-                {
-                    Console.WriteLine("Fel: Personnumret måste anges i formatet ÅÅMMDD-XXXX eller ÅÅMMDDXXXX.");
-                    continue;
-                }
-
-                // Kontrollera om giltigt personnummer
-                if (!IsValidPersonnummer(input))
-                {
-                    Console.WriteLine("Fel: Det angivna personnumret är ogiltigt.");
-                    Console.Write("Vill du försöka igen? (ja/nej): ");
-                    string retry = Console.ReadLine().ToLower();
-                    if (retry != "ja") break;
-                    continue;
-                }
-
-                Console.WriteLine("Personnumret är giltigt! Tack för att du använde vår tjänst.");
-                break;
+            // Validera personnummer
+            if (IsValidPersonnummer(personnummer))
+            {
+                Console.WriteLine($"Inmatat personnummer är giltigt: {personnummer}");
+            }
+            else
+            {
+                Console.WriteLine($"Ogiltigt personnummer: {personnummer}");
             }
 
             // Pausa programmet endast om det är en interaktiv terminal
-            if (Console.IsInputRedirected == false)
+            if (!Console.IsInputRedirected)
             {
                 Console.WriteLine("Tryck på valfri tangent för att avsluta...");
                 Console.ReadKey();
@@ -46,53 +35,22 @@ namespace PersonnummerKontroll
 
         static string TaEmotPersonnummer()
         {
-            string personnummer = "";
-            bool ärGiltigt = false;
-
-            while (!ärGiltigt)
+            while (true)
             {
-                Console.Write("Ange personnummer (format: xxxxxxxxxx eller xxxxxxx-xxxx): ");
-                personnummer = Console.ReadLine(); // Tilldela värdet inuti loopen
+                Console.Write("Ange personnummer (format: ÅÅMMDD-XXXX eller ÅÅMMDDXXXX): ");
+                string input = Console.ReadLine();
 
-                // Kontrollera om personnumret är giltigt
-                ärGiltigt = ValideraPersonnummer(personnummer);
-
-                if (!ärGiltigt)
+                if (IsValidFormat(input))
                 {
-                    Console.WriteLine("Felaktig inmatning. Försök igen.");
+                    return input.Replace("-", "");
                 }
+
+                Console.WriteLine("Fel: Personnumret måste anges i rätt format.");
             }
-
-            // Returnera det validerade personnumret utan bindestreck
-            return personnummer.Replace("-", "");
-        }
-
-        static bool ValideraPersonnummer(string personnummer)
-        {
-            // Ta bort bindestreck om det finns
-            personnummer = personnummer.Replace("-", "");
-
-            // Kontrollera om personnumret har exakt 10 eller 12 siffror
-            if (personnummer.Length != 10 && personnummer.Length != 12)
-            {
-                return false;
-            }
-
-            // Kontrollera att alla tecken är siffror
-            foreach (char c in personnummer)
-            {
-                if (!char.IsDigit(c)) // Kontrollera om tecknet är en siffra
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         static bool IsValidFormat(string personnummer)
         {
-            // Ta bort bindestreck för att göra kontrollen flexibel
             personnummer = personnummer.Replace("-", "");
 
             // Kontrollera längd (10 siffror för personnummer)
@@ -142,4 +100,3 @@ namespace PersonnummerKontroll
         }
     }
 }
-d
