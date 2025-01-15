@@ -7,7 +7,7 @@ namespace PersonnummerKontroll
         static void Main(string[] args)
         {
             // Använd standardvärde om inget personnummer tillhandahålls
-            string personnummer = args.Length > 0 ? args[0] : "1234567890";
+            string personnummer = args.Length > 0 ? args[0] : "1234567850";
 
             // Kontrollera om programmet körs i interaktivt läge (t.ex., i en terminal)
             if (Console.IsInputRedirected == false) // Interaktivt läge
