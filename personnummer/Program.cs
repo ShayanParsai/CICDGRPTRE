@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace PersonnummerKontroll
 {
@@ -10,14 +10,13 @@ namespace PersonnummerKontroll
             string personnummer = args.Length > 0 ? args[0] : "1234567850";
 
             // Kontrollera om programmet körs i interaktivt läge (t.ex., i en terminal)
-            if (Console.IsInputRedirected == false) // Interaktivt läge
+            if (!Console.IsInputRedirected) // Interaktivt läge
             {
-                // Be användaren ange ett personnummer
                 personnummer = TaEmotPersonnummer();
             }
 
-            // Visa det validerade personnumret
-            if (ValideraPersonnummer(personnummer))
+            // Validera personnummer
+            if (IsValidPersonnummer(personnummer))
             {
                 Console.WriteLine($"Inmatat personnummer är giltigt: {personnummer}");
             }
@@ -27,7 +26,7 @@ namespace PersonnummerKontroll
             }
 
             // Pausa programmet endast om det är en interaktiv terminal
-            if (Console.IsInputRedirected == false)
+            if (!Console.IsInputRedirected)
             {
                 Console.WriteLine("Tryck på valfri tangent för att avsluta...");
                 Console.ReadKey();
@@ -36,34 +35,26 @@ namespace PersonnummerKontroll
 
         static string TaEmotPersonnummer()
         {
-            string personnummer = "";
-            bool ärGiltigt = false;
-
-            while (!ärGiltigt)
+            while (true)
             {
-                Console.Write("Ange personnummer (format: xxxxxxxxxx eller xxxxxxx-xxxx): ");
-                personnummer = Console.ReadLine(); // Tilldela värdet inuti loopen
+                Console.Write("Ange personnummer (format: ÅÅMMDD-XXXX eller ÅÅMMDDXXXX): ");
+                string input = Console.ReadLine();
 
-                // Kontrollera om personnumret är giltigt
-                ärGiltigt = ValideraPersonnummer(personnummer);
-
-                if (!ärGiltigt)
+                if (IsValidFormat(input))
                 {
-                    Console.WriteLine("Felaktig inmatning. Försök igen.");
+                    return input.Replace("-", "");
                 }
-            }
 
-            // Returnera det validerade personnumret utan bindestreck
-            return personnummer.Replace("-", "");
+                Console.WriteLine("Fel: Personnumret måste anges i rätt format.");
+            }
         }
 
-        static bool ValideraPersonnummer(string personnummer)
+        static bool IsValidFormat(string personnummer)
         {
-            // Ta bort bindestreck om det finns
             personnummer = personnummer.Replace("-", "");
 
-            // Kontrollera om personnumret har exakt 10 eller 12 siffror
-            if (personnummer.Length != 10 && personnummer.Length != 12)
+            // Kontrollera längd (10 siffror för personnummer)
+            if (personnummer.Length != 10)
             {
                 return false;
             }
@@ -71,13 +62,41 @@ namespace PersonnummerKontroll
             // Kontrollera att alla tecken är siffror
             foreach (char c in personnummer)
             {
-                if (!char.IsDigit(c)) // Kontrollera om tecknet är en siffra
+                if (!char.IsDigit(c))
                 {
                     return false;
                 }
             }
 
             return true;
+        }
+
+        static bool IsValidPersonnummer(string personnummer)
+        {
+            personnummer = personnummer.Replace("-", "");
+
+            // Luhn-algoritmen
+            int sum = 0;
+            bool isSecond = false;
+
+            for (int i = personnummer.Length - 1; i >= 0; i--)
+            {
+                int digit = personnummer[i] - '0';
+
+                if (isSecond)
+                {
+                    digit *= 2;
+                    if (digit > 9)
+                    {
+                        digit -= 9;
+                    }
+                }
+
+                sum += digit;
+                isSecond = !isSecond;
+            }
+
+            return (sum % 10 == 0);
         }
     }
 }
