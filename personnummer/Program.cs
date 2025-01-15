@@ -16,13 +16,14 @@ namespace PersonnummerKontroll
             }
 
             // Validera personnummer
-            if (IsValidPersonalNumber(personalNumber))
+            if (IsValidPersonalNumber(personalNumber, out string validationMessage))
             {
                 Console.WriteLine($"Inmatat personnummer är giltigt: {personalNumber}");
             }
             else
             {
-                Console.WriteLine($"Ogiltigt personnummer: {personalNumber}");
+                // Visa detaljerad feedback om varför personnumret är ogiltigt
+                Console.WriteLine($"Ogiltigt personnummer: {validationMessage}");
             }
 
             // Pausa programmet endast om det är en interaktiv terminal
@@ -33,6 +34,9 @@ namespace PersonnummerKontroll
             }
         }
 
+        /// <summary>
+        /// Frågar användaren att ange ett personnummer, tills ett giltigt format anges.
+        /// </summary>
         static string GetPersonalNumber()
         {
             while (true)
@@ -40,20 +44,26 @@ namespace PersonnummerKontroll
                 Console.Write("Ange personnummer (format: ÅÅMMDD-XXXX eller ÅÅMMDDXXXX): ");
                 string input = Console.ReadLine();
 
+                // Om formatet är korrekt, returnera det utan bindestreck
                 if (IsValidFormat(input))
                 {
                     return input.Replace("-", "");
                 }
 
+                // Om formatet inte är korrekt, ge feedback
                 Console.WriteLine("Fel: Personnumret måste anges i rätt format.");
             }
         }
 
+        /// <summary>
+        /// Kontrollera om personnumret har rätt format (10 siffror, med eller utan bindestreck).
+        /// </summary>
         static bool IsValidFormat(string personalNumber)
         {
+            // Ta bort eventuella bindestreck
             personalNumber = personalNumber.Replace("-", "");
 
-            // Kontrollera längd (10 siffror för personnummer)
+            // Kontrollera om längden är exakt 10 siffror
             if (personalNumber.Length != 10)
             {
                 return false;
@@ -71,11 +81,21 @@ namespace PersonnummerKontroll
             return true;
         }
 
-        static bool IsValidPersonalNumber(string personalNumber)
+        /// <summary>
+        /// Validera personnumret med Luhn-algoritmen och ge mer detaljerad feedback om varför det är ogiltigt.
+        /// </summary>
+        static bool IsValidPersonalNumber(string personalNumber, out string validationMessage)
         {
             personalNumber = personalNumber.Replace("-", "");
 
-            // Luhn-algoritmen
+            // Kontrollera om personnumret har rätt längd
+            if (personalNumber.Length != 10)
+            {
+                validationMessage = "Personnumret måste vara exakt 10 siffror långt.";
+                return false;
+            }
+
+            // Luhn-algoritmen för att kontrollera om personnumret är korrekt
             int sum = 0;
             bool isSecond = false;
 
@@ -83,6 +103,7 @@ namespace PersonnummerKontroll
             {
                 int digit = personalNumber[i] - '0';
 
+                // Dubblar vartannat tal och subtraherar 9 om resultatet är större än 9
                 if (isSecond)
                 {
                     digit *= 2;
@@ -95,7 +116,17 @@ namespace PersonnummerKontroll
                 sum += digit;
                 isSecond = !isSecond;
             }
-            return (sum % 10 == 0);
+
+            // Om summan är delbar med 10 är personnumret giltigt
+            if (sum % 10 != 0)
+            {
+                validationMessage = "Personnumret följer inte Luhn-algoritmen och är ogiltigt.";
+                return false;
+            }
+
+            // Om alla kontroller passerade, är personnumret giltigt
+            validationMessage = "";
+            return true;
         }
     }
 }
