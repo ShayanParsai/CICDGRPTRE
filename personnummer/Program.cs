@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace PersonnummerKontroll
 {
@@ -7,77 +7,96 @@ namespace PersonnummerKontroll
         static void Main(string[] args)
         {
             // Använd standardvärde om inget personnummer tillhandahålls
-            string personalIdentityNumber = args.Length > 0 ? args[0] : "1234567890";
+            string personalNumber = args.Length > 0 ? args[0] : "1234567850";
 
             // Kontrollera om programmet körs i interaktivt läge (t.ex., i en terminal)
-            if (Console.IsInputRedirected == false) // Interaktivt läge
+            if (!Console.IsInputRedirected) // Interaktivt läge
             {
-                // Be användaren ange ett personnummer
-                personalIdentityNumber = ReceivePersonalIdentityNumber();
+                personalNumber = GetPersonalNumber();
             }
 
-            // Visa det validerade personnumret
-            if (ValidatePersonalIdentityNumber(personalIdentityNumber))
+            // Validera personnummer
+            if (IsValidPersonalNumber(personalNumber))
             {
-                Console.WriteLine($"The entered personal identity number is valid: {personalIdentityNumber}");
+                Console.WriteLine($"Inmatat personnummer är giltigt: {personalNumber}");
             }
             else
             {
-                Console.WriteLine($"Invalid personal identity number: {personalIdentityNumber}");
+                Console.WriteLine($"Ogiltigt personnummer: {personalNumber}");
             }
 
             // Pausa programmet endast om det är en interaktiv terminal
-            if (Console.IsInputRedirected == false)
+            if (!Console.IsInputRedirected)
             {
-                Console.WriteLine("Press any key to exit...");
+                Console.WriteLine("Tryck på valfri tangent för att avsluta...");
                 Console.ReadKey();
             }
         }
 
-        static string ReceivePersonalIdentityNumber()
+        static string GetPersonalNumber()
         {
-            string personalIdentityNumber = "";
-            bool isValid = false;
-
-            while (!isValid)
+            while (true)
             {
-                Console.Write("Enter personal identity number (format: xxxxxxxxxx or xxxxxxx-xxxx): ");
-                personalIdentityNumber = Console.ReadLine(); // Tilldela värdet inuti loopen
+                Console.Write("Ange personnummer (format: ÅÅMMDD-XXXX eller ÅÅMMDDXXXX): ");
+                string input = Console.ReadLine();
 
-                // Kontrollera om personnumret är giltigt
-                isValid = ValidatePersonalIdentityNumber(personalIdentityNumber);
-
-                if (!isValid)
+                if (IsValidFormat(input))
                 {
-                    Console.WriteLine("Invalid input. Please try again.");
+                    return input.Replace("-", "");
                 }
-            }
 
-            // Returnera det validerade personnumret utan bindestreck
-            return personalIdentityNumber.Replace("-", "");
+                Console.WriteLine("Fel: Personnumret måste anges i rätt format.");
+            }
         }
 
-        static bool ValidatePersonalIdentityNumber(string personalIdentityNumber)
+        static bool IsValidFormat(string personalNumber)
         {
-            // Ta bort bindestreck om det finns
-            personalIdentityNumber = personalIdentityNumber.Replace("-", "");
+            personalNumber = personalNumber.Replace("-", "");
 
-            // Kontrollera om personnumret har exakt 10 eller 12 siffror
-            if (personalIdentityNumber.Length != 10 && personalIdentityNumber.Length != 12)
+            // Kontrollera längd (10 siffror för personnummer)
+            if (personalNumber.Length != 10)
             {
                 return false;
             }
 
             // Kontrollera att alla tecken är siffror
-            foreach (char c in personalIdentityNumber)
+            foreach (char c in personalNumber)
             {
-                if (!char.IsDigit(c)) // Kontrollera om tecknet är en siffra
+                if (!char.IsDigit(c))
                 {
                     return false;
                 }
             }
 
             return true;
+        }
+
+        static bool IsValidPersonalNumber(string personalNumber)
+        {
+            personalNumber = personalNumber.Replace("-", "");
+
+            // Luhn-algoritmen
+            int sum = 0;
+            bool isSecond = false;
+
+            for (int i = personalNumber.Length - 1; i >= 0; i--)
+            {
+                int digit = personalNumber[i] - '0';
+
+                if (isSecond)
+                {
+                    digit *= 2;
+                    if (digit > 9)
+                    {
+                        digit -= 9;
+                    }
+                }
+
+                sum += digit;
+                isSecond = !isSecond;
+            }
+
+            return (sum % 10 == 0);
         }
     }
 }
