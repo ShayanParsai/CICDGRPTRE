@@ -1,8 +1,9 @@
 -LOGGBOK-
 
 Shayan
--
--
+- Testar att allt funkar, laddat ner repot och connectat github actions med docker. Ska nu testa ändra en rad kod och pusha för att se att allt funkar.
+- Satt upp workflows/docker på vårt repo, gjort om koden så att den funkar i en docker/CI miljö.
+- Gjort om vår Dockerfile till en Linux-baserad bild för att säkerställa kompatibilitet med GitHub Actions
 -
 Ömer
 - 

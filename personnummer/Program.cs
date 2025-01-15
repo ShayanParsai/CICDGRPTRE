@@ -95,7 +95,6 @@ namespace PersonnummerKontroll
                 sum += digit;
                 isSecond = !isSecond;
             }
-
             return (sum % 10 == 0);
         }
     }
