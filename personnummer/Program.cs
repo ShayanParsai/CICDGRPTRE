@@ -26,7 +26,7 @@ namespace PersonnummerKontroll
                 Console.WriteLine($"Ogiltigt personnummer: {validationMessage}");
             }
 
-            // Pausa programmet endast om det är en interaktiv terminal
+            // Pausa programmet endast om det körs i interaktivt läge
             if (!Console.IsInputRedirected)
             {
                 Console.WriteLine("Tryck på valfri tangent för att avsluta...");
