@@ -6,7 +6,7 @@ Shayan
 - Gjort om vår Dockerfile till en Linux-baserad bild för att säkerställa kompatibilitet med GitHub Actions
 -
 Ömer
-- 
+-  Förtydligade kommentarer
 -
 -
 Mimmi
