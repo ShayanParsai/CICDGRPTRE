@@ -14,9 +14,9 @@ Mimmi
 -
 -
 Youssef
--
--
--
+- Jag har ändrat kommentaren från "Lägg programmet på paus endast om det är en interaktiv terminal" till "Pausa programmet endast om det körs i interaktivt läge."
+- Har även fixat så att användaren får en bättre förklaring av feedbacken.
+- Kollat igenom koden och gjort små förbättringar, även testat så att de ska fungera som de ska.
 Jan
 -
 -
