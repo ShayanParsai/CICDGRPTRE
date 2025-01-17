@@ -18,6 +18,6 @@ Youssef
 - Har även fixat så att användaren får en bättre förklaring av feedbacken.
 - Kollat igenom koden och gjort små förbättringar, även testat så att de ska fungera som de ska.
 Jan
+- Uppdaterade koden genom att översätta metodnamn och konsolmeddelanden från svenska till engelska.
 - Implementerat enhetstester för IsValidPersonalNumber, fixat paketproblem och pushat ändringar till min Branch.
--
--
+- Fixade nullable-varningar i Program.cs genom att lägga till kontroller för null-värden.
