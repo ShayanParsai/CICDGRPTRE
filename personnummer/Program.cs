@@ -42,13 +42,13 @@ namespace PersonnummerKontroll
             while (true)
             {
                 Console.Write("Ange personnummer (format: ÅÅMMDD-XXXX eller ÅÅMMDDXXXX): ");
-                string input = Console.ReadLine();
+                string input = Console.ReadLine() ?? string.Empty;
 
-                // Om formatet är korrekt, returnera det utan bindestreck
-                if (IsValidFormat(input))
+                if (!string.IsNullOrEmpty(input) && IsValidFormat(input))
                 {
                     return input.Replace("-", "");
                 }
+
 
                 // Om formatet inte är korrekt, ge feedback
                 Console.WriteLine("Fel: Personnumret måste anges i rätt format.");
